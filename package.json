@@ -1,0 +1,157 @@
+{
+    "name": "vscode-ti",
+    "displayName": "VSCode-Ti",
+    "description": "Adds support for Ti-BASIC, eZ80 assembly, and the CE-Toolchain to Visual Studio Code.",
+    "version": "0.0.1",
+    "publisher": "ItsMajestiX",
+    "keywords": [
+        "TI-84+CE",
+        "ez80"
+    ],
+    "license": "GPL-3.0-or-later",
+    "readme": "readme.md",
+    "author": {
+        "name": "ItsMajestiX",
+        "url": "https://github.com/ItsMajestiX/"
+    },
+    "repository": {
+        "url": "https://github.com/ItsMajestiX/VSCode-Ti",
+        "type": "git"
+    },
+    "bugs": {
+        "url": "https://github.com/ItsMajestiX/VSCode-Ti/issues"
+    },
+    "contributors": [
+        "ItsMajestiX"
+    ],
+    "icon": "img/icon.png",
+    "engines": {
+        "vscode": "^1.39.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "main": "./dist/extension",
+    "activationEvents": [
+        "onCommand:vscode-ti.disassembleBasic",
+        "onCommand:vscode-ti.disassembleBasicContext",
+        "onCommand:vscode-ti.assembleBasic",
+        "onCommand:vscode-ti.assembleBasicContext",
+        "workspaceContains:**/*.8xp",
+        "workspaceContains:**/*.tibasic"
+    ],
+    "contributes": {
+        "commands": [
+            {
+                "command": "vscode-ti.disassembleBasic",
+                "title": "Disassemble .8xp",
+                "enablement": "resourceExtname == .8xp"
+            },
+            {
+                "command": "vscode-ti.disassembleBasicContext",
+                "title": "Disassemble .8xp"
+            },
+            {
+                "command": "vscode-ti.assembleBasic",
+                "title": "Assemble .tibasic",
+                "enablement": "resourceExtname == .tibasic"
+            },
+            {
+                "command": "vscode-ti.assembleBasicContext",
+                "title": "Assemble .tibasic"
+            }
+        ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "vscode-ti.disassembleBasic",
+                    "when": "resourceExtname == .8xp"
+                },
+                {
+                    "command": "vscode-ti.assembleBasic",
+                    "when": "resourceExtname == .tibasic"
+                }
+            ],
+            "explorer/context": [
+                {
+                    "command": "vscode-ti.disassembleBasicContext",
+                    "when": "resourceExtname == .8xp"
+                },
+                {
+                    "command": "vscode-ti.assembleBasicContext",
+                    "when": "resourceExtname == .tibasic"
+                }
+            ]
+        },
+        "languages": [
+            {
+                "id": "ti-basic",
+                "aliases": [
+                    "Ti-BASIC",
+                    "ti-basic"
+                ],
+                "extensions": [
+                    ".tibasic"
+                ],
+                "configuration": "./tibasic-language-configuration.json"
+            },
+            {
+                "id": "ez80-asm",
+                "aliases": [
+                    "ez80-Assembler"
+                ],
+                "extensions": [
+                    ".asm",
+                    ".ez80",
+                    ".inc"
+                ],
+                "configuration": "./ez80-language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "ti-basic",
+                "scopeName": "source.tibasic",
+                "path": "./syntaxes/ti-basic.tmLanguage.json"
+            },
+            {
+                "language": "ez80-asm",
+                "scopeName": "source.asm",
+                "path": "./syntaxes/ez80-asm.tmLanguage.json"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "webpack --mode production",
+        "compile": "tsc -p ./",
+        "webpack": "webpack --mode development",
+        "webpack-dev": "webpack --mode development --watch",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile",
+        "test-compile": "tsc -p ./",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/glob": "^7.1.1",
+        "@types/mocha": "^5.2.6",
+        "@types/node": "^10.14.22",
+        "@types/vscode": "^1.39.0",
+        "copy-webpack-plugin": "^5.0.4",
+        "glob": "^7.1.4",
+        "mocha": "^6.2.2",
+        "node-cmd": "^3.0.0",
+        "ts-loader": "^6.2.0",
+        "tslint": "^5.20.0",
+        "typescript": "^3.6.4",
+        "vscode-test": "^1.0.0-next.0",
+        "webpack": "^4.41.2",
+        "webpack-cli": "^3.3.9"
+    },
+    "extensionDependencies": [
+        "ms-vscode.cpptools"
+    ],
+    "dependencies": {
+        "filenamify": "^4.1.0",
+        "vscode-uri": "^2.0.3"
+    }
+}

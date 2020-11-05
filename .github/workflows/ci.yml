@@ -1,0 +1,72 @@
+name: CI
+
+on: [push]
+
+jobs:
+  test:
+    name: Build and test with os ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+       
+    steps:
+      - uses: actions/checkout@v1
+      - name: Download node.js 10.11.0 (version used in VSCode)
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.11.0
+
+      - name: Install deps and compile
+        run: |
+          npm install --only=dev
+          npm install
+          npm run test-compile
+          
+      - name: Run tests with xvfb-run
+        run: xvfb-run npm run test
+        if: matrix.os == 'ubuntu-latest'
+        
+      - name: Run tests (no xvfb, we have a gui)
+        run: npm run test
+        if: matrix.os != 'ubuntu-latest'
+   
+  package:
+    name: Package to .vsix and upload
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Download node.js 10.11.0 (version used in VSCode)
+      uses: actions/setup-node@v1
+      with:
+        version: 10.11.0
+          
+    - name: npm install deps
+      run: |
+        npm install --only=dev && npm install
+        
+    - name: Install vsce from my repo
+      run: |
+        git clone https://github.com/ItsMajestiX/vscode-vsce.git
+        cd vscode-vsce
+        npm install --only=dev
+        npm install
+        tsc
+        cp src/vsce out/vsce
+        cd ..
+          
+    - name: Create .vsix file
+      run: |
+        ./vscode-vsce/out/vsce package
+        mkdir artifacts
+        mv *.vsix artifacts/
+          
+    - name: Upload artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: vscode-ti
+        path: artifacts
+        
+        
